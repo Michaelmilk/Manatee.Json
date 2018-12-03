@@ -25,12 +25,40 @@ namespace Manatee.Json.Tests
 		public void Test()
 		{
 			var serializer = new JsonSerializer();
-			var target = new Container {Value = new Mass {Value = 5}};
-			JsonValue expected = new JsonObject {["Value"] = new JsonObject {["Value"] = 5}};
+			var text = @"{
+	""$id"": ""http://example.com/root.json"",
+	""definitions"": {
+		""A"": { ""type"": ""integer"" }
+	},
+	""properties"": {
+		""$id"": {
+			""type"": ""string""
+		},
+		""attributes"": {
+			""$ref"": ""#/tilda~0field/slash~1field/$id""
+		}
+	},
+	""tilda~field"": {
+		""$id"": ""t/inner.json"",
+		""slash/field"": {
+			""$id"": {
+				""$id"": ""test/b"",
+				""$ref"": ""document.json""
+			}
+		}
+	}
+}";
 
-			var actual = serializer.Serialize(target);
+			var schemaJson = JsonValue.Parse(text);
 
-			Assert.AreEqual(expected, actual);
+			var schema = serializer.Deserialize<JsonSchema>(schemaJson);
+
+			schema.Validate(new JsonObject
+				{
+					["attributes"] = 6
+				});
+
+			Console.WriteLine(schema.ToJson(serializer));
 		}
 	}
 }
