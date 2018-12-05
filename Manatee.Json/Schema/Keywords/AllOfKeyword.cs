@@ -47,6 +47,7 @@ namespace Manatee.Json.Schema
 					};
 					var result = s.Validate(newContext);
 					context.EvaluatedPropertyNames.AddRange(newContext.EvaluatedPropertyNames);
+					context.LastEvaluatedIndex = Math.Max(context.LastEvaluatedIndex, newContext.LastEvaluatedIndex);
 					return result;
 				}).ToList();
 
