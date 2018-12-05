@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using Manatee.Json.Schema;
 using Manatee.Json.Serialization;
@@ -90,6 +91,12 @@ namespace Manatee.Json.Tests.Schema.TestSuite
 			{
 				var test = _serializer.Deserialize<SchemaTest>(testJson);
 				var schema = _serializer.Deserialize<JsonSchema>(schemaJson);
+
+				if (test.Description == "mismatch base schema")
+				{
+					Debugger.Break();
+				}
+
 				var results = schema.Validate(test.Data);
 
 				if (test.Valid != results.IsValid)
