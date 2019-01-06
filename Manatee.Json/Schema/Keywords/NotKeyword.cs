@@ -69,11 +69,7 @@ namespace Manatee.Json.Schema
 			var nestedResults = Value.Validate(newContext);
 			context.EvaluatedPropertyNames.AddRange(newContext.EvaluatedPropertyNames);
 
-			if (nestedResults.IsValid)
-			{
-				results.IsValid = false;
-				results.Keyword = Name;
-			}
+			results.IsValid = !nestedResults.IsValid;
 
 			return results;
 		}
