@@ -12,11 +12,11 @@ namespace Manatee.Json.Tests.Schema.TestSuite
 	[TestFixture]
 	public class JsonSchemaTestSuite
 	{
-		private const string Draft04TestFolder = @"..\..\..\Json-Schema-Test-Suite\tests\draft4\";
-		private const string Draft06TestFolder = @"..\..\..\Json-Schema-Test-Suite\tests\draft6\";
-		private const string Draft07TestFolder = @"..\..\..\Json-Schema-Test-Suite\tests\draft7\";
-		private const string Draft08TestFolder = @"..\..\..\Json-Schema-Test-Suite\tests\draft8\";
-		private const string RemotesFolder = @"..\..\..\Json-Schema-Test-Suite\remotes\";
+		private const string Draft04TestFolder = @"..\..\..\..\Json-Schema-Test-Suite\tests\draft4\";
+		private const string Draft06TestFolder = @"..\..\..\..\Json-Schema-Test-Suite\tests\draft6\";
+		private const string Draft07TestFolder = @"..\..\..\..\Json-Schema-Test-Suite\tests\draft7\";
+		private const string Draft08TestFolder = @"..\..\..\..\Json-Schema-Test-Suite\tests\draft8\";
+		private const string RemotesFolder = @"..\..\..\..\Json-Schema-Test-Suite\remotes\";
 		private static readonly JsonSerializer _serializer;
 
 		public static IEnumerable TestData04 => _LoadSchemaJson(Draft04TestFolder);
@@ -26,7 +26,7 @@ namespace Manatee.Json.Tests.Schema.TestSuite
 
 		private static IEnumerable<TestCaseData> _LoadSchemaJson(string testFolder)
 		{
-			var testsPath = System.IO.Path.Combine(TestContext.CurrentContext.TestDirectory, testFolder).AdjustForOS();
+			var testsPath = System.IO.Path.Combine(TestContext.CurrentContext.WorkDirectory, testFolder).AdjustForOS();
 			var fileNames = Directory.GetFiles(testsPath, "*.json");
 
 			foreach (var fileName in fileNames)

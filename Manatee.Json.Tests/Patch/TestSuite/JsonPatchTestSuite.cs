@@ -5,13 +5,14 @@ using System.IO;
 using Manatee.Json.Patch;
 using Manatee.Json.Serialization;
 using NUnit.Framework;
+using NUnit.Framework.Interfaces;
 
 namespace Manatee.Json.Tests.Patch.TestSuite
 {
 	[TestFixture]
 	public class JsonPatchTestSuite
 	{
-		private const string _testFolder = @"..\..\..\json-patch-tests";
+		private const string _testFolder = @"..\..\..\..\json-patch-tests";
 		private static readonly JsonSerializer _serializer;
 
 		// ReSharper disable once MemberCanBePrivate.Global
@@ -21,7 +22,7 @@ namespace Manatee.Json.Tests.Patch.TestSuite
 		{
 			JsonOptions.DuplicateKeyBehavior = DuplicateKeyBehavior.Overwrite;
 
-			var testsPath = System.IO.Path.Combine(TestContext.CurrentContext.TestDirectory, _testFolder).AdjustForOS();
+			var testsPath = System.IO.Path.Combine(TestContext.CurrentContext.WorkDirectory, _testFolder).AdjustForOS();
 			var fileNames = Directory.GetFiles(testsPath, "*tests*.json");
 
 			foreach (var fileName in fileNames)
@@ -70,14 +71,21 @@ namespace Manatee.Json.Tests.Patch.TestSuite
 			}
 			catch (Exception e)
 			{
-				Console.WriteLine(fileName);
-				Console.WriteLine(testJson.GetIndentedString());
-				Console.WriteLine(e.Message);
+				Console.WriteLine("File name: {0}", fileName);
+				Console.WriteLine("Test: {0}", testJson.GetIndentedString());
+				Console.WriteLine("Exception: {0}", e.Message);
 				Console.WriteLine(e.StackTrace);
 				if (result != null)
-					Console.WriteLine(result.Error);
+					Console.WriteLine("Error: {0}", result.Error);
 				if (testJson.Object.TryGetBoolean("disabled") ?? false)
-					Assert.Inconclusive();
+				{
+					// This is a serious hack.  The .Net Core version of NUnit tracks the assertions as they occur
+					// and this is causing the disabled tests to fail.  To remedy this we need to clear the assertions
+					// record before we assert inconclusive.
+					// It seems this was automatically done with the .Net Framework version.
+					(TestContext.CurrentContext.Result.Assertions as ICollection<AssertionResult>)?.Clear();
+					Assert.Inconclusive("Test is disabled.  Ignoring...");
+				}
 				throw;
 			}
 		}
