@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections;
+using System.IO;
 using System.Linq;
 using System.Net;
 using Manatee.Json.Schema;
+using Manatee.Json.Serialization;
 using NUnit.Framework;
 
 namespace Manatee.Json.Tests.Schema
@@ -62,6 +64,22 @@ namespace Manatee.Json.Tests.Schema
 					Assert.Inconclusive();
 				throw;
 			}
+		}
+
+
+		[Test]
+		public void ValidateIgn()
+		{
+			var schemaContent = File.ReadAllText(@"E:\code\github\DataIngestionEngine\Src\Tests\DataIngestionEngine.Tests.Study\Resources\Manatee\ign_schema.json");
+			var schemaValue = JsonValue.Parse(schemaContent);
+			var schema = JsonSchemaFactory.FromJson(schemaValue);
+			//schema.FromJson(schemaValue, new JsonSerializer());
+
+			var payload = File.ReadAllText(@"E:\code\github\DataIngestionEngine\Src\Tests\DataIngestionEngine.Tests.Study\Resources\Manatee\ign.json");
+			var json = JsonValue.Parse(payload);
+			var validateResult = schema.Validate(json);
+			var errors = validateResult.Errors;
+			Assert.IsNotNull(validateResult);
 		}
 	}
 }
